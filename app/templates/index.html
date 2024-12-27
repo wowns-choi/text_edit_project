@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI Example</title>
+    <link rel="stylesheet" href="./index.css">
+    <style>
+        #submitBtn {
+            transition: background-color 0.2s, color 0.2s;
+            width: 5vw;
+            height: 4vh;
+            border-radius: 10px;
+            background-color: white;
+            border: 2px solid black;
+            cursor: pointer;
+            font-size: 16px;
+            color: black;
+        }
+
+        #submitBtn:hover {
+            background-color: darkslategray;
+            color: white;
+        }
+
+        #generatingText {
+            font-size: 20px;
+            margin-top: 10px;
+            display: none;
+            color: coral;
+        }
+    </style>
+</head>
+
+<body style="margin: 0; padding: 0;">
+    <!-- <h1>Hello, {{ name }}!</h1> -->
+    <form action="/edit" method="post">
+        <div
+            style="width: 100vw; height: 30vh; background-color: darkslategray; display: flex; justify-content: center; align-items: center; font-size: 100px; color: white; flex-direction: column;">
+            <div>Test Page</div>
+            <div id="generatingText">글 생성중</div>
+        </div>
+        <!-- 큰 컨테이너 -->
+        <div style="display: flex; width: 100vw; height: 70vh;">
+            <!-- 왼쪽 -->
+            <div
+                style=" flex-basis:50%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <input id="keyword" type="text" name="keyword" placeholder="질병명을 입력해주세요. ex: 급성골수모구백혈병"
+                    style="width:10vw; height: 4vh; border-radius: 10px; border: 1px solid black; outline: none; padding: 10px; font-size: 12px;">
+                <!-- <select id="keywordCount">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select> -->
+                <select id="specialCharacters"
+                    style="width: 5vw; height: 5vh; border-radius: 10px; border: 1px solid black; background-color: black; font-size: 20px; color: white; margin-top: 10px; margin-bottom: 10px;">
+                    <option value="₩">₩</option>
+                    <option value="!">!</option>
+                    <option value="@">@</option>
+                    <option value="#">#</option>
+                    <option value="$">$</option>
+                    <option value="%">%</option>
+                    <option value="^">^</option>
+                    <option value="&">&</option>
+                    <option value="*">*</option>
+                    <option value="-">-</option>
+                    <option value="_">_</option>
+                    <option value="+">+</option>
+                    <option value="=">=</option>
+                </select>
+                <button type="button" id="submitBtn">
+                    글 생성
+                </button>
+            </div>
+            <!-- 오른쪽 컨테이너 -->
+            <div style="flex-basis:50%;">
+                <div id="textareaTag"
+                    style="width: 100%; height: 100%;  font-size: 17px; border-left: 1px solid black;"></div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        let submitBtn = document.getElementById('submitBtn');
+        submitBtn.addEventListener('click', function () {
+            let keyword = document.getElementById('keyword');
+            // let keywordCount = document.getElementById('keywordCount');
+            let specialCharacters = document.getElementById('specialCharacters');
+            let textareaTag = document.getElementById('textareaTag');
+
+
+            let keywordVal = keyword.value;
+            // let keywordCountVal = keywordCount.value;
+            let specialCharactersVal = specialCharacters.value;
+
+            const data = {};
+            data["keyword"] = keywordVal;
+            // data["keywordCount"] = keywordCountVal;
+            data["specialCharacters"] = specialCharactersVal;
+
+            let generatingText = document.getElementById('generatingText');
+            generatingText.style.display = 'flex';
+
+            fetch('http://localhost:8000/edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                    textareaTag.innerText = data.returnText;
+                    generatingText.style.display = 'none';
+                })
+                .catch(error => console.error('Error:', error));
+        })
+    </script>
+
+</body>
+
+</html>
