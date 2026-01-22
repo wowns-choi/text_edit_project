@@ -3,7 +3,9 @@ import time
 import requests
 import json
 
-client = OpenAI(api_key="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")
+from app.config import settings
+
+client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 # 쓰레드 생성 
 def create_new_thread():
@@ -40,12 +42,11 @@ def get_latest_response(threadId, lastMessageId):
     )
 
 BASE_URL = "https://api.openai.com/v1"
-API_KEY = "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"
 # 스트림 
 def stream_run(thread_id, assistant_id):
     url = f"{BASE_URL}/threads/{thread_id}/runs"
     headers = {
-        "Authorization": f"Bearer {API_KEY}",
+        "Authorization": f"Bearer {settings.OPENAI_API_KEY}",
         "Content-Type": "application/json",
         "OpenAI-Beta": "assistants=v2"
     }

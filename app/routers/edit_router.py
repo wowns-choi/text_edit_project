@@ -7,6 +7,8 @@ from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.templating import Jinja2Templates
 # -- html 렌더링을 위함
 
+from app.config import settings
+
 router = APIRouter()
 
 # Jinja2 템플릿 설정
@@ -53,16 +55,16 @@ def edit(origin : OriginalText):
     keywordCount = "5"
 
     # message 생성 
-    msg = service.streamMessage("asst_YdB9mgjaIWjqgtmTkq803kh7", threadId, "키워드: " + keyword )
+    msg = service.streamMessage(settings.GENERATOR_ASSISTANT_ID, threadId, "키워드: " + keyword )
     # msg = service.streamMessage("asst_YdB9mgjaIWjqgtmTkq803kh7", threadId, "키워드: " + keyword)
-    totalStream = service.stream_run(threadId, "asst_YdB9mgjaIWjqgtmTkq803kh7")
+    totalStream = service.stream_run(threadId, settings.GENERATOR_ASSISTANT_ID)
 
     # 특수문자 사이사이 넣는 GPT (이미지 자리인듯) 호출. : 병원 특수문자 집어넣기
     newThread2 = service.create_new_thread()
     threadId = newThread2.id
 
-    msg = service.streamMessage("asst_489DtT1p60MaBEUElkDhphjN", threadId, "특수문자: " + sc +", 글: " + totalStream)
-    totalStream = service.stream_run(threadId, "asst_489DtT1p60MaBEUElkDhphjN")
+    msg = service.streamMessage(settings.STYLING_ASSISTANT_ID, threadId, "특수문자: " + sc +", 글: " + totalStream)
+    totalStream = service.stream_run(threadId, settings.STYLING_ASSISTANT_ID)
 
 
     # -- 정규표현식 시작 
